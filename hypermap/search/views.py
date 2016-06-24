@@ -13,6 +13,8 @@ from django.views.decorators.csrf import csrf_exempt
 
 from rest_framework.decorators import api_view
 
+from shapely.geometry import mapping
+from shapely.wkt import loads
 from pycsw import server
 
 from hypermap.aggregator.models import Layer, Resource
@@ -168,6 +170,7 @@ def search_api(request):
             result['name'] = res.name
         if res.keywords and len(res.keywords.all()) > 0:
             result['keywords'] = [kw.name for kw in res.keywords.all()]
+        result['geometry'] = mapping(loads(res.wkt_geometry))
         response['results'].append(result)
 
     return JsonResponse(response)
