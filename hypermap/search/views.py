@@ -6,14 +6,16 @@ import os
 
 from django.conf import settings
 from django.shortcuts import get_object_or_404
-from django.http import HttpResponse, HttpResponseForbidden
+from django.http import HttpResponse, HttpResponseForbidden, JsonResponse
 from django.shortcuts import render_to_response
 from django.template import loader, RequestContext
 from django.views.decorators.csrf import csrf_exempt
 
+from rest_framework.decorators import api_view
+
 from pycsw import server
 
-from hypermap.aggregator.models import Catalog
+from hypermap.aggregator.models import Layer, Resource
 
 
 @csrf_exempt
@@ -105,6 +107,70 @@ def opensearch_dispatch(request):
 
     return render_to_response('search/opensearch_description.xml', ctx,
                               content_type='application/opensearchdescription+xml')
+
+@api_view(['GET'])
+def search_api(request):
+    """
+    REST/JSON API
+    ---
+    # YAML (must be separated by `---`)
+
+    type:
+      name:
+        required: true
+        type: string
+      url:
+        required: false
+        type: url
+      created_at:
+        required: true
+        type: string
+        format: date-time
+
+    parameters:
+        - name: q.text
+          description: freetext search
+          required: false
+          type: string
+          paramType: query
+
+    responseMessages:
+        - code: 401
+          message: Not authenticated
+
+    consumes:
+        - application/json
+    produces:
+        - application/json
+    """
+
+    q_text = request.GET.get('q.text', None)
+
+    results = Resource.objects.all()
+
+    if q_text:
+        results = results.filter(anytext__icontains=q_text)
+
+    response = {}
+    response['count'] = len(results)
+    response['prev'] = None
+    response['next'] = None
+    response['results'] = []
+
+    for res in results:
+        result = {}
+        result['id'] = res.id
+        result['type'] = res.type
+        result['title'] = res.title
+        result['abstract'] = res.abstract
+        result['url'] = res.url
+        if hasattr(res, 'name'):
+            result['name'] = res.name
+        if res.keywords and len(res.keywords.all()) > 0:
+            result['keywords'] = [kw.name for kw in res.keywords.all()]
+        response['results'].append(result)
+
+    return JsonResponse(response)
 
 
 def _is_authenticated():

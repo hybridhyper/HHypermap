@@ -65,6 +65,7 @@ setup(
         'django-taggit==0.18.0',
         'django-wsgi==1.0b1',
         'django-extensions==1.6.7',
+        'django-rest-swagger==3.3.3',
         'dj-database-url==0.4.0',
         'pika==0.10.0',
         'pycsw==2.0.0-alpha1',

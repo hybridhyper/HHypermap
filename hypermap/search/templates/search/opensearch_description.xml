@@ -7,6 +7,7 @@
     <InputEncoding>UTF-8</InputEncoding>
     <Url type="text/html" template="{{ url }}?q={searchTerms}"/>
     <Url type="application/atom+xml" template="{{ url }}/search/csw?mode=opensearch&amp;service=CSW&amp;version=2.0.2&amp;request=GetRecords&amp;elementsetname=full&amp;typenames=csw:Record&amp;resulttype=results&amp;q={searchTerms?}&amp;bbox={geo:box?}&amp;time={time:start?}/{time:end?}&amp;startposition={startIndex?}&amp;maxrecords={count?}"/>
+    <Url type="application/json" template="{{ url }}/search/?q.text={searchTerms}&amp;q.geo={geo:box}&amp;q.time={time:start?}/{time:end?}&amp;d.docs.offset={startIndex}&amp;d.docs.limit={count}"/>
     <Developer>{{ developer }}</Developer>
     <Contact>{{ contact }}</Contact>
     <Attribution>{{ attribution }}</Attribution>

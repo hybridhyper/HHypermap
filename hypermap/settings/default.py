@@ -65,6 +65,7 @@ INSTALLED_APPS = (
     'pagination',
     'taggit',
     'django_extensions',
+    'rest_framework_swagger',
     'hypermap.aggregator',
     'hypermap.proxymap',
     'hypermap.dynasty',
@@ -258,4 +259,30 @@ PYCSW = {
         'contact_instructions': 'During hours of service. Off on weekends.',
         'contact_role': 'pointOfContact'
     }
+}
+
+# django-rest-swagger settings
+SWAGGER_SETTINGS = {
+    'exclude_namespaces': [],
+    'api_version': '0.1.0',
+    #'api_path': '/search/api',
+    'api_path': '/',
+    'enabled_methods': [
+        'get',
+    ],
+    'api_key': '',
+    'is_authenticated': False,
+    'is_superuser': False,
+    'unauthenticated_user': 'django.contrib.auth.models.AnonymousUser',
+    'permission_denied_handler': None,
+    'resource_access_handler': None,
+    'info': {
+        'contact': PYCSW['metadata:main']['contact_email'],
+        'description': PYCSW['metadata:main']['identification_abstract'],
+        'license': 'MIT',
+        'licenseUrl': 'https://opensource.org/licenses/MIT',
+        'termsOfServiceUrl': 'http://about.worldmap.harvard.edu/',
+        'title': PYCSW['metadata:main']['identification_title'],
+    },
+    'doc_expansion': 'none',
 }
